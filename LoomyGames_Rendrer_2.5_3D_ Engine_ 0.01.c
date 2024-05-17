@@ -15,20 +15,20 @@
 typedef struct 
 {
  int fr1,fr2;           //frame 1 frame 2, to create constant frame rate
-}time; time T;
+}time; time Time;
 
 typedef struct 
 {
  int w,s,a,d;           //move up, down, left, right
  int sl,sr;             //strafe left, right 
  int m;                 //move up, down, look up, down
-}keys; keys K;
+}keys; keys Key;
 
 typedef struct 
 {
  float cos[360];  /* data */
  float sin[360];
-}math; math M;
+}math; math Math;
 
 typedef struct 
 {
@@ -88,7 +88,7 @@ void pixel(int x,int y, int c)                  //draw a pixel at x/y with rgb
 void movePlayer()
 {
  //move up, down, left, right
- if(K.a ==1 && K.m==0)
+ if(Key.a ==1 && Key.m==0)
     {
          printf("left\n");
 
@@ -100,7 +100,7 @@ void movePlayer()
             }
     }  
 
- if(K.d ==1 && K.m==0)
+ if(Key.d ==1 && Key.m==0)
     {
          printf("right\n");
 
@@ -111,39 +111,38 @@ void movePlayer()
             Player1.angle-=360;
          }
          
-
     }  
- if(K.w ==1 && K.m==0)
+ if(Key.w ==1 && Key.m==0)
     {
          printf("up\n");
     }
- if(K.s ==1 && K.m==0)
+ if(Key.s ==1 && Key.m==0)
     { 
         printf("down\n");
     }
  //strafe left, right
- if(K.sr==1)
+ if(Key.sr==1)
     {
          printf("strafe left\n");
     }
- if(K.sl==1)
+ if(Key.sl==1)
     {
          printf("strafe right\n");
     }
  //move up, down, look up, look down
- if(K.a==1 && K.m==1)
+ if(Key.a==1 && Key.m==1)
     {
          printf("look up\n");
     }
- if(K.d==1 && K.m==1)
+ if(Key.d==1 && Key.m==1)
     {
          printf("look down\n");
     }
- if(K.w==1 && K.m==1)
+ if(Key.w==1 && Key.m==1)
     {
         printf("move up\n");
     }
- if(K.s==1 && K.m==1)
+ if(Key.s==1 && Key.m==1)
     {
         printf("move down\n");
     }
@@ -199,18 +198,18 @@ void display()
 
 int x,y;
 
- if(T.fr1-T.fr2>=50)                        //only draw 20 frames/second
+ if(Time.fr1-Time.fr2>=50)                        //only draw 20 frames/second
  { 
   clearBackground();
   movePlayer();
   draw3D(); 
 
-  T.fr2=T.fr1;   
+  Time.fr2=Time.fr1;   
   glutSwapBuffers(); 
   glutReshapeWindow(GLSW,GLSH);             //prevent window scaling
  }
 
- T.fr1=glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
+ Time.fr1=glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
  glutPostRedisplay();
 } 
 
@@ -218,37 +217,37 @@ void KeysDown(unsigned char key,int x,int y)
 { 
  if(key=='w'==1)
     {
-         K.w =1;
+         Key.w =1;
     } 
 
  if(key=='s'==1)
     {
-         K.s =1;
+         Key.s =1;
     } 
 
  if(key=='a'==1)    
     { 
-        K.a =1;
+        Key.a =1;
     } 
 
  if(key=='d'==1)
     { 
-        K.d =1;
+        Key.d =1;
     } 
 
  if(key=='m'==1)
     {
-        K.m =1;
+        Key.m =1;
     } 
 
  if(key==','==1)
     { 
-        K.sr=1;
+        Key.sr=1;
     } 
 
  if(key=='.'==1)
     {
-         K.sl=1;
+         Key.sl=1;
     } 
 }
 
@@ -256,37 +255,37 @@ void KeysUp(unsigned char key,int x,int y)
     { 
 if(key=='w'==1)
     {
-        K.w =0;
+        Key.w =0;
     }
 
 if(key=='s'==1)
     {
-        K.s =0;
+        Key.s =0;
     }
 
  if(key=='a'==1)
     { 
-        K.a =0;
+        Key.a =0;
     }
 
  if(key=='d'==1)
     { 
-        K.d =0;
+        Key.d =0;
     }
 
  if(key=='m'==1)
     { 
-        K.m =0;
+        Key.m =0;
     }
 
  if(key==','==1)
     { 
-        K.sr=0;
+        Key.sr=0;
     } 
 
  if(key=='.'==1)
     { 
-        K.sl=0;
+        Key.sl=0;
     }
 
 }
@@ -297,8 +296,8 @@ void init()
 
     for (x=0;x<360;x++)
     {
-      M.cos[x]=cos(x/180.0*M_PI);
-      M.sin[x]=sin(x/180.0*M_PI);
+      Math.cos[x]=cos(x/180.0*M_PI);
+      Math.sin[x]=sin(x/180.0*M_PI);
     } 
 
     Player1.x=70;
