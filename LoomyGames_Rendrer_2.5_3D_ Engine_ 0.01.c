@@ -1,3 +1,4 @@
+//©LoomyGames 2024 All rights reserved
 
 #include <math.h>
 #include <stdio.h>
@@ -37,38 +38,35 @@ typedef struct
   int pich;
 }Player; Player Player1;
 
-
-//------------------------------------------------------------------------------
-
 void pixel(int x,int y, int c)                  //draw a pixel at x/y with rgb
 {int rgb[3];
  if(c==0)
     {
-         rgb[0]=255; rgb[1]=255; rgb[2]=  0;//Yellow
+         rgb[0]= 255; rgb[1]= 255; rgb[2]=  0;//Yellow
     } 	
  if(c==1)
     { 
-        rgb[0]=160; rgb[1]=160; rgb[2]=  0;//Yellow darker
+        rgb[0]= 160; rgb[1]= 160; rgb[2]=  0;//Yellow darker
     } 
  if(c==2)
     { 
-        rgb[0]=  0; rgb[1]=255; rgb[2]=  0;//Green
+        rgb[0]=  0; rgb[1]= 255; rgb[2]=  0;//Green
     } 	
  if(c==3)
     { 
-        rgb[0]=  0; rgb[1]=160; rgb[2]=  0;//Green darker	
+        rgb[0]=  0; rgb[1]= 160; rgb[2]=  0;//Green darker	
     } 
  if(c==4)
     { 
-        rgb[0]=  0; rgb[1]=255; rgb[2]=255;//Cyan
+        rgb[0]=  0; rgb[1]= 255; rgb[2]=255;//Cyan
     } 	
  if(c==5)
     { 
-        rgb[0]=  0; rgb[1]=160; rgb[2]=160;//Cyan darker
+        rgb[0]=  0; rgb[1]= 160; rgb[2]=160;//Cyan darker
     } 
  if(c==6)
     { 
-        rgb[0]=160; rgb[1]=100; rgb[2]=  0;//brown
+        rgb[0]=160; rgb[1]= 100; rgb[2]=  0;//brown
     } 	
  if(c==7)
     { 
@@ -109,42 +107,65 @@ void movePlayer()
          if(Player1.angle>359)
          {
             Player1.angle-=360;
-         }
-         
+         } 
     }  
+
+    int dx=Math.sin[Player1.angle] * 10.0;
+    int dy=Math.cos[Player1.pich] * 10.0;
+
  if(Key.w ==1 && Key.m==0)
     {
          printf("up\n");
+
+         Player1.x += dx;
+         Player1.y += dy;
     }
  if(Key.s ==1 && Key.m==0)
     { 
         printf("down\n");
+
+        Player1.x -= dx;
+        Player1.y -= dy;
     }
  //strafe left, right
  if(Key.sr==1)
     {
          printf("strafe left\n");
+         
+         Player1.x += dy;
+         Player1.x -= dx;
     }
  if(Key.sl==1)
     {
          printf("strafe right\n");
+
+         Player1.x -= dy;
+         Player1.y += dx;
     }
  //move up, down, look up, look down
  if(Key.a==1 && Key.m==1)
     {
          printf("look up\n");
+
+         Player1.pich -= 1;
     }
  if(Key.d==1 && Key.m==1)
     {
          printf("look down\n");
+
+         Player1.pich += 1;
     }
  if(Key.w==1 && Key.m==1)
     {
-        printf("move up\n");
+         printf("move up\n");
+
+         Player1.z -= 4;
     }
  if(Key.s==1 && Key.m==1)
     {
-        printf("move down\n");
+         printf("move down\n");
+
+         Player1.z += 4;
     }
 }
 
@@ -162,35 +183,45 @@ int x,y;
  }	
 }
 
-int tick;
-
 void draw3D()
 {
-   int x,y,c=0;
+   int Worldx[4], Worldy[4],Worldz[4];
+   float CS = Math.cos[Player1.angle], SN=Math.sin[Player1.angle];
 
- for(y=0;y<SH2;y++)
- {
+   int x1 = 40 - Player1.x, y1 = 10 - Player1.y;
+   int x2 = 40 - Player1.x, y2 = 290 - Player1.y;
+//world position
+   Worldx[0] = x1 * CS - y1 * SN;
+   Worldx[1] = x2 * CS - y2 * SN;
 
-  for(x=0;x<SW2;x++)
-  {
-   pixel(x,y,c); 
-   c+=1; 
+   Worldy[0] = y1 * CS + x1 * SN;
+   Worldy[1] = y2 * CS + x2 * SN;
+//World Height
+   Worldz[0] = 0 - Player1.z + ((Player1.pich * Worldy[0])/32.0);
+   Worldz[1] = 0 - Player1.z + ((Player1.pich * Worldy[1])/32.0); 
 
-   if(c>8)
-    {
-        c=0;
-    }
-  }
- }
- //frame rate
- tick+=1; 
- if(tick>20)
-    { 
-        tick=0;
-    } 
+   //Screen position
 
-pixel(SW2,SH2+tick,6); 
-
+   Worldx[0] = Worldx[0] * 200/Worldy[0] + SW2;
+   Worldy[0] = Worldz[0] * 200/Worldy[0] + SH2;
+   Worldx[1] = Worldx[1] * 200/Worldy[1] + SW2;
+   Worldy[1] = Worldz[1] * 200/Worldy[1] + SH2;
+   //Draw
+   if (Worldx[0]>0 && Worldx[0]<SW && Worldy[0]>0 && Worldy[0]<SH)
+   {
+       pixel
+         (
+         Worldx[0], Worldy[0], 0
+         );
+   }
+   
+   if (Worldx[1]>0 && Worldx[1]<SW && Worldy[1]>0 && Worldy[1]<SH)
+   {
+      pixel
+         (
+         Worldx[1], Worldy[1], 0
+         );
+   }
 }
 
 void display() 
