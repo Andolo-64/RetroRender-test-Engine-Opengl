@@ -183,6 +183,86 @@ int x,y;
  }	
 }
 
+void clipingBehind(int *xl,int *yl, int *zl, int x2, int y2, int z2)
+{
+   float distPlanA = *yl;
+   float distPlanB = y2;
+   float d = distPlanA - distPlanB;
+   if (d == 0)
+   {
+      d = 1;
+   }
+   float s = distPlanA / (distPlanA-distPlanB);
+   *xl = *xl + s*(x2 - (*xl));
+   *yl = *yl + s*(y2- (*yl));
+   if (*yl == 0)
+   {
+      *yl = 1;
+   }
+   *zl = *zl + s* (z2 - (*zl));
+}
+
+void drwaWall(int x1, int x2, int b1, int b2, int t1, int t2)
+{
+   int x,y;
+   int distanYBottom = b2-b1;
+   int distanYTopp = t2-t1;
+   int distanX = x2-x1;
+   if (distanX == 0)
+   {
+      distanX = 1;
+   }
+   int startx = x1;
+   // stop x cliping
+   if (x1 < 1)
+   {
+      x1 = 0;
+   }
+   if (x2 < 1)
+   {
+      x2 = 0;
+   }
+   if(x1 > SW - 1)
+   {
+      x1 = SW - 0;
+   }
+   if (x2 > SW - 1)
+   {
+      x2 = SW - 0;
+   }
+   
+
+   //drwa lines
+   for(x=x1;x<x2;x++)
+   {
+      int y1 = distanYBottom * (x - startx + 0.5) / distanX + b1;
+      int y2 = distanYTopp * (x - startx + 0.5) / distanX + t1;
+
+      if (y1 < 1)
+      {
+         y1 = 0;
+      }
+      if (y2 < 1)
+      {
+         y2 = 0;
+      }
+      if (y1 < SH - 1)
+      {
+         y1 > SH - 0;
+      }
+      if (y2 > SH - 1)
+      {
+         y2 = SH - 0;
+      }
+      
+      for (y=y1;y<y2;y++)
+      {
+         pixel(x,y, 0);
+      }
+   }
+
+}
+
 void draw3D()
 {
    int Worldx[4], Worldy[4],Worldz[4];
@@ -193,12 +273,34 @@ void draw3D()
 //world position
    Worldx[0] = x1 * CS - y1 * SN;
    Worldx[1] = x2 * CS - y2 * SN;
+   Worldx[2] = Worldx[0];
+   Worldx[3] = Worldx[1];
 
    Worldy[0] = y1 * CS + x1 * SN;
    Worldy[1] = y2 * CS + x2 * SN;
+   Worldy[2] = Worldy[0];
+   Worldy[3] = Worldy[1];
 //World Height
    Worldz[0] = 0 - Player1.z + ((Player1.pich * Worldy[0])/32.0);
    Worldz[1] = 0 - Player1.z + ((Player1.pich * Worldy[1])/32.0); 
+   Worldz[2] = Worldz[0] + 40;
+   Worldz[3] = Worldz[1] + 40;
+// if not wisebel downt draw
+   if (Worldy[0] < 1 && Worldy[1] < 1)
+   {
+      return;
+   }
+   if (Worldy[0]<1)
+   {
+      clipingBehind(&Worldx[0], &Worldy[0], &Worldz[0], Worldx[1], Worldy[1], Worldz[1]);
+      clipingBehind(&Worldx[2], &Worldy[2], &Worldz[2], Worldx[3], Worldy[3], Worldz[3]);
+   }
+     if (Worldy[1]<1)
+   {
+      clipingBehind(&Worldx[1], &Worldy[1], &Worldz[1], Worldx[0], Worldy[0], Worldz[0]);
+      clipingBehind(&Worldx[3], &Worldy[3], &Worldz[3], Worldx[2], Worldy[2], Worldz[2]);
+   }
+   
 
    //Screen position
 
@@ -206,22 +308,13 @@ void draw3D()
    Worldy[0] = Worldz[0] * 200/Worldy[0] + SH2;
    Worldx[1] = Worldx[1] * 200/Worldy[1] + SW2;
    Worldy[1] = Worldz[1] * 200/Worldy[1] + SH2;
+   Worldx[2] = Worldx[2] * 200/Worldy[2] + SW2;
+   Worldy[2] = Worldz[2] * 200/Worldy[2] + SH2;
+   Worldx[3] = Worldx[3] * 200/Worldy[3] + SW2;
+   Worldy[3] = Worldz[3] * 200/Worldy[3] + SH2;
    //Draw
-   if (Worldx[0]>0 && Worldx[0]<SW && Worldy[0]>0 && Worldy[0]<SH)
-   {
-       pixel
-         (
-         Worldx[0], Worldy[0], 0
-         );
-   }
-   
-   if (Worldx[1]>0 && Worldx[1]<SW && Worldy[1]>0 && Worldy[1]<SH)
-   {
-      pixel
-         (
-         Worldx[1], Worldy[1], 0
-         );
-   }
+
+   drwaWall(Worldx[0], Worldx[1], Worldy[0], Worldy[1], Worldy[2], Worldy[3]);
 }
 
 void display() 
@@ -332,7 +425,7 @@ void init()
     } 
 
     Player1.x=70;
-    Player1.y=110;  
+    Player1.y=-110;  
     Player1.z=20;
     Player1.angle=0;
     Player1.pich=0;
@@ -344,7 +437,7 @@ int main(int argc, char* argv[])
  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
  glutInitWindowPosition(GLSW/2,GLSH/2);
  glutInitWindowSize(GLSW,GLSH);
- glutCreateWindow("Â©LoomyGames"); 
+ glutCreateWindow("©LoomyGames"); 
  glPointSize(pixelScale);                        //pixel size
  gluOrtho2D(0,GLSW,0,GLSH);                      //origin bottom left
  init();
