@@ -86,32 +86,32 @@ void pixel(int x,int y, int c)                  //draw a pixel at x/y with rgb
 void movePlayer()
 {
  //move up, down, left, right
- if(Key.a ==1 && Key.m==0)
+ if(Key.a == 1 && Key.m == 0)
     {
          printf("left\n");
 
-         Player1.angle-=4;
+         Player1.angle -= 4;
 
-         if(Player1.angle< 0)
+         if(Player1.angle < 0)
             {
-               Player1.angle+=360;
+               Player1.angle += 360;
             }
     }  
 
- if(Key.d ==1 && Key.m==0)
+ if(Key.d ==1 && Key.m == 0)
     {
          printf("right\n");
 
-         Player1.angle+=4;
+         Player1.angle += 4;
 
-         if(Player1.angle>359)
+         if(Player1.angle > 359)
          {
-            Player1.angle-=360;
+            Player1.angle -= 360;
          } 
     }  
 
     int dx=Math.sin[Player1.angle] * 10.0;
-    int dy=Math.cos[Player1.pich] * 10.0;
+    int dy=Math.cos[Player1.angle] * 10.0;
 
  if(Key.w ==1 && Key.m==0)
     {
@@ -133,7 +133,7 @@ void movePlayer()
          printf("strafe left\n");
          
          Player1.x += dy;
-         Player1.x -= dx;
+         Player1.y -= dx;
     }
  if(Key.sl==1)
     {
@@ -364,12 +364,12 @@ void KeysDown(unsigned char key,int x,int y)
         Key.m =1;
     } 
 
- if(key==','==1)
+ if(key=='.'==1)
     { 
         Key.sr=1;
     } 
 
- if(key=='.'==1)
+ if(key==','==1)
     {
          Key.sl=1;
     } 
@@ -402,12 +402,12 @@ if(key=='s'==1)
         Key.m =0;
     }
 
- if(key==','==1)
+ if(key=='.'==1)
     { 
         Key.sr=0;
     } 
 
- if(key=='.'==1)
+ if(key==','==1)
     { 
         Key.sl=0;
     }
@@ -437,7 +437,7 @@ int main(int argc, char* argv[])
  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
  glutInitWindowPosition(GLSW/2,GLSH/2);
  glutInitWindowSize(GLSW,GLSH);
- glutCreateWindow("©LoomyGames"); 
+ glutCreateWindow("Â©LoomyGames"); 
  glPointSize(pixelScale);                        //pixel size
  gluOrtho2D(0,GLSW,0,GLSH);                      //origin bottom left
  init();
