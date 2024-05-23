@@ -202,6 +202,7 @@ void clipingBehind(int *xl,int *yl, int *zl, int x2, int y2, int z2)
    *zl = *zl + s* (z2 - (*zl));
 }
 
+
 void drwaWall(int x1, int x2, int b1, int b2, int t1, int t2)
 {
    int x,y;
@@ -230,7 +231,11 @@ void drwaWall(int x1, int x2, int b1, int b2, int t1, int t2)
    {
       x2 = SW - 0;
    }
-   
+
+// Mouse motion callback function
+void motion(int x, int y) {
+    printf("Mouse moved to (%d, %d)\n", x, y);
+} 
 
    //drwa lines
    for(x=x1;x<x2;x++)
@@ -336,6 +341,31 @@ int x,y;
  Time.fr1=glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
  glutPostRedisplay();
 } 
+
+ void mouse(int button, int state, int x, int y) ;
+
+  void mouse(int button, int state, int x, int y) {
+    if (state == GLUT_DOWN) {
+        if (button == GLUT_LEFT_BUTTON) {
+            printf("Left button pressed at (%d, %d)\n", x, y);
+        } else if (button == GLUT_RIGHT_BUTTON) {
+            printf("Right button pressed at (%d, %d)\n", x, y);
+        }
+    } else if (state == GLUT_UP) {
+        if (button == GLUT_LEFT_BUTTON) {
+            printf("Left button released at (%d, %d)\n", x, y);
+        } else if (button == GLUT_RIGHT_BUTTON) {
+            printf("Right button released at (%d, %d)\n", x, y);
+        }
+    }
+}
+
+void motion(int x, int y);
+
+void motion(int x, int y) {
+    printf("Mouse moved to (%d, %d)\n", x, y);
+}
+
 
 void KeysDown(unsigned char key,int x,int y)   
 { 
@@ -444,6 +474,8 @@ int main(int argc, char* argv[])
  glutDisplayFunc(display);
  glutKeyboardFunc(KeysDown);
  glutKeyboardUpFunc(KeysUp);
+ glutMouseFunc(mouse);
+ glutMotionFunc(motion);
  glutMainLoop();
  return 0;
 } 
